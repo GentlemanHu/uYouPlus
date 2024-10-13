@@ -154,7 +154,19 @@ jobs:
           name: uYouPlus_${{ env.YOUTUBE_VERSION }}_${{ env.UYOU_VERSION }}
           path: ${{ github.workspace }}/main/packages/${{ steps.build_package.outputs.package }}
           if-no-files-found: error
-
+          
+      - name: Upload files to Telegram
+        uses: GentlemanHu/TelegramFileUploader@v1.1.1-fix-channelid
+        with:
+          to-who: -1001353561380
+          message: '新的Youtube IPA包构建成功! \n uYou版本是：`${{env.UYOU_VERSION}}` \n Youtube版本是：`${{env.YOUTUBE_VERSION}}`'
+          files: |
+            ${{ github.workspace }}/main/packages/${{ steps.build_package.outputs.package }}
+        env:
+          API_ID: ${{ secrets.TG_API_ID }}
+          API_HASH: ${{ secrets.TG_API_HASH }}
+          BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          
       - name: Create Release
         id: create_release
         uses: qnblackcat/action-gh-release@master
